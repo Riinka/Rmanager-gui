@@ -1,48 +1,109 @@
+#include <time.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-static void helloWorld (GtkWidget *wid, GtkWidget *win)
-{
-  GtkWidget *dialog = NULL;
+void Pause(int Temps);
 
-  dialog = gtk_message_dialog_new (GTK_WINDOW (win), GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "Hello World!");
-  gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
-  gtk_dialog_run (GTK_DIALOG (dialog));
-  gtk_widget_destroy (dialog);
+int main(int argc,char **argv)
+{
+    GtkWidget* pWindow;
+    const gchar* sTitre;
+    gint sLargeur;
+    gint sHauteur;
+    gint sPosition_y;
+    gint sPosition_x;
+    int icone;
+
+    gtk_init(&argc,&argv);
+
+    pWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+
+    /* Personnalisation de la Fenêtre */
+
+    // Titre
+    gtk_window_set_title(GTK_WINDOW(pWindow), "The library of Arnouville");
+    // Taille
+    gtk_window_set_default_size(GTK_WINDOW(pWindow), 260, 40);
+    // Position
+    gtk_window_set_position(GTK_WINDOW (pWindow), GTK_WIN_POS_CENTER);
+    // Icône
+    icone = gtk_window_set_icon_from_file(GTK_WINDOW(pWindow), "icone.ico", NULL);
+
+    g_signal_connect(G_OBJECT(pWindow), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+    /* Récupération des Informations sur la Fenêtre */
+
+    // Titre
+    sTitre = gtk_window_get_title(GTK_WINDOW(pWindow));
+    // Taille
+    gtk_window_get_default_size(GTK_WINDOW(pWindow), &sLargeur, &sHauteur);
+    // Position
+    gtk_window_get_position(GTK_WINDOW(pWindow), &sPosition_x, &sPosition_y);
+
+    /* Affichage des Informations */
+
+
+    printf("\n-------\nFenetre\n------- \n \nTitre: %s \nTaille: %d x %d \nPosition: %dy %dx\nIcone: ", sTitre, sLargeur, sHauteur, sPosition_y, sPosition_x);
+
+    // Icône
+    if (icone == 1) // Si l'icône est Chargée
+       printf("Charge! \n");
+
+    else if (icone == 0) // Si l'icône n'est pas Chargée (impossible de l'ouvrir)
+       printf("Impossible de Charger l'icone... \n");
+
+    Pause(3);
+
+    gtk_widget_show_all(pWindow);
+
+    /* Modification de la Fenêtre */
+
+    Pause(1);
+
+    printf("\n \n------------\nModification\n------------\n");
+
+    sPosition_y = 200;
+    sPosition_x = 200;
+
+    // Position
+    gtk_window_move(GTK_WINDOW(pWindow), sPosition_x, sPosition_y);
+    printf("\nNouveau positionnement: %d x %d", sPosition_y, sPosition_x);
+
+    Pause(1);
+
+    sLargeur = 460;
+    sHauteur = 240;
+
+    // Taille
+    gtk_window_resize(GTK_WINDOW(pWindow), sLargeur, sHauteur);
+    printf("\nNouvelle taille: %d x %d", sHauteur, sLargeur);
+
+    Pause(1);
+
+    // Maximiser
+    gtk_window_maximize(GTK_WINDOW(pWindow));
+    printf("\nMaximiser");
+    Pause(1);
+
+    // Restaurer
+    gtk_window_unmaximize(GTK_WINDOW(pWindow));
+    printf("\nRestaurer");
+
+    gtk_main();
+
+    return EXIT_SUCCESS;
 }
 
-int main (int argc, char *argv[])
+void Pause(int Temps)
 {
-  GtkWidget *button = NULL;
-  GtkWidget *win = NULL;
-  GtkWidget *vbox = NULL;
+     int T1, T2;
 
-  /* Initialize GTK+ */
-  g_log_set_handler ("Gtk", G_LOG_LEVEL_WARNING, (GLogFunc) gtk_false, NULL);
-  gtk_init (&argc, &argv);
-  g_log_set_handler ("Gtk", G_LOG_LEVEL_WARNING, g_log_default_handler, NULL);
+     T1 = time(NULL);
 
-  /* Create the main window */
-win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_container_set_border_width (GTK_CONTAINER (win), 8);
-  gtk_window_set_title (GTK_WINDOW (win), "Hello World");
-  gtk_window_set_position (GTK_WINDOW (win), GTK_WIN_POS_CENTER);
-  gtk_widget_realize (win);
-  g_signal_connect (win, "destroy", gtk_main_quit, NULL);
-  /* Create a vertical box with buttons */
-  vbox = gtk_vbox_new (TRUE, 6);
-  gtk_container_add (GTK_CONTAINER (win), vbox);
+     do
+     {
+          T2 = time(NULL);
+     }
 
-  button = gtk_button_new_from_stock (GTK_STOCK_DIALOG_INFO);
-  g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (helloWorld), (gpointer) win);
-  gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
-
-  button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-  g_signal_connect (button, "clicked", gtk_main_quit, NULL);
-  gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
-
-  /* Enter the main loop */
-  gtk_widget_show_all (win);
-  gtk_main ();
-  return 0;
+     while(T2-T1 != Temps);
 }
