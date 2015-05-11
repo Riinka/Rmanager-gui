@@ -1,8 +1,7 @@
-#include <time.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-void Pause(int Temps);
+
 
 int main(int argc,char **argv)
 {
@@ -12,7 +11,9 @@ int main(int argc,char **argv)
     gint sHauteur;
     gint sPosition_y;
     gint sPosition_x;
-    int icone;
+    GtkWidget *pTable;
+
+
 
     gtk_init(&argc,&argv);
 
@@ -26,39 +27,35 @@ int main(int argc,char **argv)
     gtk_window_set_default_size(GTK_WINDOW(pWindow), 260, 40);
     // Position
     gtk_window_set_position(GTK_WINDOW (pWindow), GTK_WIN_POS_CENTER);
-    // Icône
-    icone = gtk_window_set_icon_from_file(GTK_WINDOW(pWindow), "icone.ico", NULL);
+
 
     g_signal_connect(G_OBJECT(pWindow), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-    /* Récupération des Informations sur la Fenêtre */
 
-    // Titre
-    sTitre = gtk_window_get_title(GTK_WINDOW(pWindow));
-    // Taille
-    gtk_window_get_default_size(GTK_WINDOW(pWindow), &sLargeur, &sHauteur);
-    // Position
-    gtk_window_get_position(GTK_WINDOW(pWindow), &sPosition_x, &sPosition_y);
+
+
+    /* Creation et insertion de la table 3 lignes 2 colonnes */
+    pTable=gtk_table_new(3,2,TRUE);
+    gtk_container_add(GTK_CONTAINER(pWindow), GTK_WIDGET(pTable));
+
+
+
+
+
 
     /* Affichage des Informations */
 
 
     printf("\n-------\nFenetre\n------- \n \nTitre: %s \nTaille: %d x %d \nPosition: %dy %dx\nIcone: ", sTitre, sLargeur, sHauteur, sPosition_y, sPosition_x);
 
-    // Icône
-    if (icone == 1) // Si l'icône est Chargée
-       printf("Charge! \n");
 
-    else if (icone == 0) // Si l'icône n'est pas Chargée (impossible de l'ouvrir)
-       printf("Impossible de Charger l'icone... \n");
 
-    Pause(3);
 
     gtk_widget_show_all(pWindow);
 
     /* Modification de la Fenêtre */
 
-    Pause(1);
+
 
     printf("\n \n------------\nModification\n------------\n");
 
@@ -69,7 +66,7 @@ int main(int argc,char **argv)
     gtk_window_move(GTK_WINDOW(pWindow), sPosition_x, sPosition_y);
     printf("\nNouveau positionnement: %d x %d", sPosition_y, sPosition_x);
 
-    Pause(1);
+
 
     sLargeur = 460;
     sHauteur = 240;
@@ -78,12 +75,12 @@ int main(int argc,char **argv)
     gtk_window_resize(GTK_WINDOW(pWindow), sLargeur, sHauteur);
     printf("\nNouvelle taille: %d x %d", sHauteur, sLargeur);
 
-    Pause(1);
+
 
     // Maximiser
     gtk_window_maximize(GTK_WINDOW(pWindow));
     printf("\nMaximiser");
-    Pause(1);
+
 
     // Restaurer
     gtk_window_unmaximize(GTK_WINDOW(pWindow));
@@ -94,16 +91,5 @@ int main(int argc,char **argv)
     return EXIT_SUCCESS;
 }
 
-void Pause(int Temps)
-{
-     int T1, T2;
 
-     T1 = time(NULL);
 
-     do
-     {
-          T2 = time(NULL);
-     }
-
-     while(T2-T1 != Temps);
-}
